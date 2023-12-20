@@ -4,6 +4,18 @@ import uuid
 from typing import Union, Callable, Optional
 from functools import wraps
 
+
+def count_calls(method: Callable) -> Callable:
+    ''' def count calls '''
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        ''' def wrapper '''
+        key_name = method.__qualname__
+        self._redis.incr(key_name, 0) + 1
+        return method(self, *args, **kwds)
+    return wrapper
+
+
 class Cache():
     ''' class cache '''
     def __init__(self):
